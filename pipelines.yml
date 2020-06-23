@@ -10,31 +10,19 @@ resources:
 pipelines:
   - name: Matrix_Demo_Pipeline
     steps:
-      - name: Start
-        type: Bash
-        configuration:
-          inputResources:
-            - name: MyRepo
-        execution:
-          onStart:
-            - echo "Lets start"
-    
-      - name: Begin_Matrix
+      - name: begin_matrix
         type: PreMatrix
-        configuration:
-          inputSteps:
-            - name: Start
         execution:
           onExecute:
             - echo "Executing PreMatrix step...."
-            - echo "File got created in fanout step" >> input.txt
+            - echo "File got created in PreMatrix step" >> input.txt
       
-      - name: Matrix_Example
+      - name: matrix_example
         type: Matrix
         stepMode: Bash
         configuration:
           inputSteps:
-            - name: Begin_Matrix
+            - name: begin_matrix
         stepletMultipliers:
           environmentVariables:             # Sets of environment variables for steplets
             - animal:    dog                # - Set 1
@@ -85,17 +73,17 @@ pipelines:
             - echo "-----"
             - set_step_var matrix_envs "animal = ${animal}, mineral = ${mineral}, vegetable = ${vegetable}"
 
-      - name: Finish_Matrix
+      - name: finish_matrix
         type: PostMatrix
         configuration:
           inputSteps: 
-            - name: Matrix_Example
+            - name: matrix_example
         execution:
           onExecute:
             - echo "Executing PostMatrix step"
             - echo "Matrix state files..."
-            - ls -l Matrix_Example/files/
-            - cat Matrix_Example/files/*
-            - echo "FanOut state files..."
-            - ls -l Matrix_Example/fanout_demo
-            - get_step_var Matrix_Example matrix_envs
+            - ls -l matrix_example/files/
+            - cat matrix_example/files/*
+            - echo "PostMatrix state files..."
+            - ls -l matrix_example/fanout_demo
+            - get_step_var matrix_example matrix_envs
