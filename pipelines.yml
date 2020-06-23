@@ -1,9 +1,20 @@
+resources:
+  - name: MyRepo
+    type: GitRepo
+    configuration:
+      gitProvider: tw_github
+      path: jfrogtw/pipelines_run_1
+      branches:
+        include: ^namechange$
+      
 pipelines:
   - name: Matrix_Demo_Pipeline
     steps:
       - name: Begin_Matrix
         type: PreMatrix
         configuration:
+          inputResources:
+            - name: MyRepo
         execution:
           onExecute:
             - echo "Executing PreMatrix step...."
@@ -68,8 +79,6 @@ pipelines:
       - name: Finish_Matrix
         type: PostMatrix
         configuration:
-          inputResources:
-            - name: MyRepo
           inputSteps: 
             - name: Matrix_Example
         execution:
