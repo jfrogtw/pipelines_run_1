@@ -1,92 +1,31 @@
-resources:
-  - name: self_repo
-    type: GitRepo
-    configuration:
-      path: Khazinawaz/pipelines_run_1
-      branches:
-        include: ^namechange$
-      gitProvider: nawaz_gh
-
-  - name: incoming_wh
-    type: IncomingWebhook
-    configuration:
-      webhookName: incoming
-
 pipelines:
-  - name: Matrix_Demo_Env
-    steps:
-      - name: Start
-        type: Bash
-        execution:
-          onStart:
-            - echo "Lets start"
+  - name: Matrix_Demo_Pipeline
 
-      - name: fanout_demo
+      - name: Begin_Matrix
         type: PreMatrix
         configuration:
-          inputSteps: 
-            - name: Start
         execution:
           onExecute:
-            - echo "Executing fanout step...."
+            - echo "Executing PreMatrix step...."
             - echo "File got created in fanout step" >> input.txt
       
-      - name: fanout_demo_2
-        type: PreMatrix
-        configuration:
-          inputSteps: 
-            - name: Start
-        execution:
-          onExecute:
-            - echo "Executing fanout step...."
-            - echo "File got created in fanout step" >> input.txt
-
-      - name: fanout_demo_3
-        type: PreMatrix
-        configuration:
-          inputSteps:
-            - name: Start
-        execution:
-          onExecute:
-            - echo "Executing fanout step...."
-            - echo "File got created in fanout step" >> input.txt
-
-      - name: matrix_demo
+      - name: Matrix_Example
         type: Matrix
         stepMode: Bash
         configuration:
           inputSteps:
-            - name: fanout_demo
-            - name: fanout_demo_2
-            - name: fanout_demo_3
+            - name: Begin_Matrix
         stepletMultipliers:
-          environmentVariables:
-            - key1: value1
-              key2: value2
-            - key1: value3
-              key2: value4
-            - key1: value5
-            - key1: value6
-            - key1: value7
-            - key1: value8
-            - key1: value8
-            - key1: value9
-            - key1: value10
-            - key1: value11
-            - key1: value12
-            - key1: value13
-            - key1: value14
-            - key1: value15
-            - key1: value16
-            - key1: value17
-            - key1: value18
-            - key1: value19
-            - key1: value20
-            - key1: value12
-            - key1: value13
-            - key1: value14
-            - key1: value15
-            - key1: value16
+          environmentVariables:             # Sets of environment variables for steplets
+            - animal:    dog                # - Set 1
+              mineral:   copper
+              vegetable: carrot
+            - animal:    goat               # - Set 2
+              mineral:   iron
+              vegetable: broccoli
+            - animal:    lizard             # - Set 3
+              mineral:   lead          
+              
           runtimes:
             - type: image
               image:
@@ -101,13 +40,6 @@ pipelines:
                   language: node
                   versions:
                     - 8.17.0
-
-            - type: image
-              image:
-                auto:
-                  language: node
-                  versions:
-                    - 12.14.0
 
             - type: image
               image:
@@ -126,99 +58,26 @@ pipelines:
           onExecute:
             - echo "Executing matrix step on ${steplet_id}"
             - cat ./fanout_demo/input.txt
-            - cat ./fanout_demo_2/input.txt
-            - cat ./fanout_demo_3/input.txt
-            - touch input
-            - cat ./fanout_demo/input.txt ./fanout_demo_2/input.txt ./fanout_demo_3/input.txt > input.txt
             - mkdir -p files
             - echo "-----"
             - echo "File got created in steplet ${steplet_number}" >> ./files/${steplet_number}.txt
             - echo "Running on runtime ${step_image_name}:${step_image_tag}" >> ./files/${steplet_number}.txt
             - echo "-----"
-            - set_step_var matrix_envs "key1 = ${key1},key2 = ${key2}"
+            - set_step_var matrix_envs "animal = ${animal}, mineral = ${mineral}, vegetable = ${vegetable}"
 
-
-
-      - name: matrix_demo_2
-        type: Matrix
-        stepMode: Bash
-        configuration:
-          inputSteps:
-            - name: fanout_demo
-            - name: fanout_demo_2
-            - name: fanout_demo_3
-        stepletMultipliers:
-          environmentVariables:
-            - key1: value1
-              key2: value2
-            - key1: value3
-              key2: value4
-          runtimes:
-            - type: image
-              image:
-                auto:
-                  language: java
-                  versions:
-                    - 13.0
-            - type: image
-              image:
-                auto:
-                  language: node
-                  versions:
-                    - 8.17.0
-        execution:
-          onExecute:
-            - echo "Executing matrix step on ${steplet_id}"
-            - cat ./fanout_demo/input.txt
-            - cat ./fanout_demo_2/input.txt
-            - cat ./fanout_demo_3/input.txt
-            - touch input
-            - cat ./fanout_demo/input.txt ./fanout_demo_2/input.txt ./fanout_demo_3/input.txt > input.txt
-            - mkdir -p files
-            - echo "-----"
-            - echo "File got created in steplet ${steplet_number}" >> ./files/${steplet_number}.txt
-            - echo "Running on runtime ${step_image_name}:${step_image_tag}" >> ./files/${steplet_number}.txt
-            - echo "-----"
-            - set_step_var matrix_envs "key1 = ${key1},key2 = ${key2}"
-
-      - name: fanin_demo
+      - name: Finish_Matrix
         type: PostMatrix
         configuration:
-          integrations:
-            - name: s_artifactory
           inputResources:
-            - name: self_repo
+            - name: MyRepo
           inputSteps: 
-            - name: matrix_demo
-            - name: matrix_demo_2
+            - name: Matrix_Example
         execution:
           onExecute:
-            - echo "Executing fanin step"
+            - echo "Executing PostMatrix step"
             - echo "Matrix state files..."
-            - ls -l matrix_demo/files/
-            - ls -l matrix_demo_2/files
-            - echo "state 1 files..."
-            - cat matrix_demo/files/*
-            - echo "state 2 files"
-            - cat matrix_demo_2/files/*
-            - ls -l matrix_demo/fanout_demo
-            - pushd "$res_self_repo_resourcePath/docker/"
-            - export imageName="192.168.50.4/docker-local/sample:0.0.${run_number}"
-            - docker build -t  $imageName . 
-            - jfrog rt docker-push $imageName docker-local
-            - popd
-            - get_step_var matrix_demo matrix_envs
-            - get_step_var matrix_demo_2 matrix_envs
-
-  - name: Incomming_Pipeline
-    steps:
-      - name: Should_Trigger
-        type: Bash
-        configuration:
-          inputResources:
-            - name: incoming_wh
-        execution:
-          onStart:
-            - echo "Webhook triggered"
-              
-              
+            - ls -l Matrix_Example/files/
+            - cat Matrix_Example/files/*
+            - echo "FanOut state files..."
+            - ls -l Matrix_Example/fanout_demo
+            - get_step_var Matrix_Example matrix_envs
