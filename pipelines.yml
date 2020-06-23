@@ -1,6 +1,6 @@
 pipelines:
   - name: Matrix_Demo_Pipeline
-
+  steps:
       - name: Begin_Matrix
         type: PreMatrix
         configuration:
