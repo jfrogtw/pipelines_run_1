@@ -10,11 +10,20 @@ resources:
 pipelines:
   - name: Matrix_Demo_Pipeline
     steps:
-      - name: Begin_Matrix
-        type: PreMatrix
+      - name: Start
+        type: Bash
         configuration:
           inputResources:
             - name: MyRepo
+        execution:
+          onStart:
+            - echo "Lets start"
+    
+      - name: Begin_Matrix
+        type: PreMatrix
+        configuration:
+          inputSteps:
+            - name: Start
         execution:
           onExecute:
             - echo "Executing PreMatrix step...."
