@@ -9,22 +9,13 @@ resources:
 pipelines:
   - name: Matrix_Demo_Pipeline
     steps:
-      - name: begin_matrix
-        type: PreMatrix
-        configuration:
-          inputResources:
-            - name: CompletedBuild
-        execution:
-          onExecute:
-            - echo "Executing PreMatrix step...."
-            - echo "File got created in PreMatrix step" >> input.txt
-      
+     
       - name: matrix_example
         type: Matrix
         stepMode: Bash
         configuration:
-          inputSteps:
-            - name: begin_matrix
+          inputResources:
+            - name: CompletedBuild
         stepletMultipliers:
           environmentVariables:             # Sets of environment variables for steplets
             - animal:    dog                # - Set 1
@@ -36,55 +27,8 @@ pipelines:
             - animal:    lizard             # - Set 3
               mineral:   lead          
               
-          runtimes:
-            - type: image
-              image:
-                auto:
-                  language: java
-                  versions:
-                    - 13.0
-
-            - type: image
-              image:
-                auto:
-                  language: node
-                  versions:
-                    - 8.17.0
-
-            - type: image
-              image:
-                auto:
-                  language: node
-                  versions:
-                    - 12.14.0
-
-            - type: image
-              image:
-                auto:
-                  language: cpp
-                  versions:
-                    - 8.0.0
         execution:
           onExecute:
             - echo "Executing matrix step on ${steplet_id}"
-            - cat ./begin_matrix/input.txt
-            - mkdir -p files
-            - echo "-----" >> ./files/${steplet_number}.txt
-            - echo "File got created in steplet ${steplet_number}" >> ./files/${steplet_number}.txt
-            - echo "Running on runtime ${step_image_name}:${step_image_tag}" >> ./files/${steplet_number}.txt
-            - echo "Env variables animal = ${animal}, mineral = ${mineral}, vegetable = ${vegetable}" >> ./files/${steplet_number}.txt
-            - echo "-----" >> ./files/${steplet_number}.txt
-
-      - name: finish_matrix
-        type: PostMatrix
-        configuration:
-          inputSteps: 
-            - name: matrix_example
-        execution:
-          onExecute:
-            - echo "Executing PostMatrix step"
-            - echo "Matrix Step state files..."
-            - ls -l matrix_example/files/
-            - cat matrix_example/files/*
-            - echo "PreMatrix Step state files..."
-            - ls -l matrix_example/begin_matrix
+            - echo "Running on runtime ${step_image_name}:${step_image_tag}"
+            - echo "Env variables animal = ${animal}, mineral = ${mineral}, vegetable = ${vegetable}"
