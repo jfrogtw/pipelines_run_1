@@ -7,7 +7,7 @@
 #      buildNumber:          1
       
 pipelines:
-  - name: Matrix_Demo_Pipeline
+  - name: Matrix_Single_Pipeline
     steps:
      
       - name: matrix_example
