@@ -81,8 +81,8 @@ pipelines:
         execution:
           onExecute:
             - echo "Executing PostMatrix step"
-            - echo "Matrix state files..."
+            - echo "Matrix Step state files..."
             - ls -l matrix_example/files/
             - cat matrix_example/files/*
-            - echo "PostMatrix state files..."
+            - echo "PreMatrix Step state files..."
             - ls -l matrix_example/begin_matrix
