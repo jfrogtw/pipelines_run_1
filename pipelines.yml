@@ -70,7 +70,7 @@ pipelines:
             - echo "-----" >> ./files/${steplet_number}.txt
             - echo "File got created in steplet ${steplet_number}" >> ./files/${steplet_number}.txt
             - echo "Running on runtime ${step_image_name}:${step_image_tag}" >> ./files/${steplet_number}.txt
-            - echo "Env variables: animal = ${animal}, mineral = ${mineral}, vegetable = ${vegetable}" >> ./files/${steplet_number}.txt
+            - echo "Env variables animal = ${animal}, mineral = ${mineral}, vegetable = ${vegetable}" >> ./files/${steplet_number}.txt
             - echo "-----" >> ./files/${steplet_number}.txt
 
       - name: finish_matrix
