@@ -11,6 +11,9 @@ pipelines:
     steps:
       - name: begin_matrix
         type: PreMatrix
+        configuration:
+          inputresources:
+            - CompletedBuild
         execution:
           onExecute:
             - echo "Executing PreMatrix step...."
