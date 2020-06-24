@@ -1,10 +1,10 @@
-resources:
-  - name: CompletedBuild
-    type: BuildInfo
-    configuration:
-      sourceArtifactory:    art
-      buildName:            ExampleBuild
-      buildNumber:          1
+#resources:
+#  - name: CompletedBuild
+#    type: BuildInfo
+#    configuration:
+#      sourceArtifactory:    art
+#      buildName:            ExampleBuild
+#      buildNumber:          1
       
 pipelines:
   - name: Matrix_Demo_Pipeline
