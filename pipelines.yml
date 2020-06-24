@@ -12,7 +12,7 @@ pipelines:
       - name: begin_matrix
         type: PreMatrix
         configuration:
-          inputresources:
+          inputResources:
             - name: CompletedBuild
         execution:
           onExecute:
