@@ -65,7 +65,7 @@ pipelines:
         execution:
           onExecute:
             - echo "Executing matrix step on ${steplet_id}"
-            - cat ./fanout_demo/input.txt
+            - cat ./begin_matrix/input.txt
             - mkdir -p files
             - echo "-----"
             - echo "File got created in steplet ${steplet_number}" >> ./files/${steplet_number}.txt
@@ -85,5 +85,5 @@ pipelines:
             - ls -l matrix_example/files/
             - cat matrix_example/files/*
             - echo "PostMatrix state files..."
-            - ls -l matrix_example/fanout_demo
+            - ls -l matrix_example/begin_matrix
             - get_step_var matrix_example matrix_envs
