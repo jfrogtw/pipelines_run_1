@@ -86,4 +86,3 @@ pipelines:
             - cat matrix_example/files/*
             - echo "PostMatrix state files..."
             - ls -l matrix_example/begin_matrix
-            - get_step_var matrix_example matrix_envs
