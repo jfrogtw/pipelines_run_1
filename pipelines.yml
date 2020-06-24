@@ -1,11 +1,10 @@
 resources:
-  - name: MyRepo
-    type: GitRepo
+  - name: CompletedBuild
+    type: BuildInfo
     configuration:
-      gitProvider: tw_github
-      path: jfrogtw/pipelines_run_1
-      branches:
-        include: ^namechange$
+      sourceArtifactory:    art
+      buildName:            ExampleBuild
+      buildNumber:          1
       
 pipelines:
   - name: Matrix_Demo_Pipeline
