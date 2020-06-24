@@ -30,5 +30,5 @@ pipelines:
         execution:
           onExecute:
             - echo "Executing matrix step on ${steplet_id}"
-            - echo "Triggered on build of ${res_CompletedBuild_buildName}:${res_CompletedBuild_buildNumber}
+            - echo "Triggered on build of ${res_CompletedBuild_buildName}:${res_CompletedBuild_buildNumber}"
             - echo "Env variables animal = ${animal}, mineral = ${mineral}, vegetable = ${vegetable}"
